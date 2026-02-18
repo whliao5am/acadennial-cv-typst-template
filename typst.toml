@@ -1,0 +1,16 @@
+[package]
+name = "acadennial-cv"
+version = "0.1.0"
+entrypoint = "lib.typ"
+authors = ["Wenhao Liao <https://whliao.me>"]
+license = "MIT"
+description = "A professional template for academic and perennial CV"
+repository = "https://github.com/whliao5am/acadennial-cv-typst-template"
+keywords = ["cv", "academic", "resume"]
+categories = ["cv"]
+exclude = ["template/cv.pdf", "examples/"]
+
+[template]
+path = "template"
+entrypoint = "cv.typ"
+thumbnail = "thumbnail.png"
