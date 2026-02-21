@@ -1,51 +1,92 @@
 #import "icons.typ": *
 
-#let left-col-ratio = 17%
+// default layout settings ratio
+#let left-col-ratio = 15%
+#let col-gutter = 1.2em
 
+// Configure the icon registry with default colors.
+#let configured-icons = configure-icon-registry(
+  color: luma(20%),
+  height: 0.95em,
+  baseline: 20%,
+)
+#let google-scholar-icon = configured-icons.at("google-scholar-icon")
+#let link-icon = configured-icons.at("link-icon")
+#let linkedin-icon = configured-icons.at("linkedin-icon")
+#let github-icon = configured-icons.at("github-icon")
+#let orcid-icon = configured-icons.at("orcid-icon")
+#let x-icon = configured-icons.at("x-icon")
+
+// ============================================
+// Two-column layout function.
+// ============================================
+#let cols(
+  left-len,
+  right-len,
+  left-content,
+  right-content,
+  col-gutter: col-gutter,
+  ) = {
+    grid(
+      columns: (left-len, right-len),
+      column-gutter: col-gutter,
+      left-content,
+      right-content,
+    )
+}
+
+#let lcol(left-len, right-len, content, col-gutter: col-gutter) = {
+  cols(left-len, right-len, content, [], col-gutter: col-gutter)
+}
+
+#let rcol(left-len, right-len, content, col-gutter: col-gutter) = {
+  cols(left-len, right-len, [], content, col-gutter: col-gutter)
+}
+
+// ============================================
+// RESUME FUNCTION
+// ============================================
 #let resume(
-  // margin: (left: 1.4cm, right: 1.2cm, top: 0.8cm, bottom: 1cm),
-  // font-settings: (
-  //   font-family: "Palatino",
-  //   font-size: 10pt,
-  //   author-font-size: 25pt,
-  //   lang: "en",
+  paper: "a4", // or "us-letter"
+  margin: (left: 0.95in, right: 0.95in, top: 0.9in, bottom: 0.9in),
+  font-args: (
+    font-family: "Alegreya",
+    font-size: 10pt,
+    heading-font-family: "Helvetica",
+    author-font-family: "Helvetica",
+    author-font-size: 20pt,
+    head-web-font-family: "Courier New",
+    head-web-font-size: 0.95em,
+  ),
+  par-args: (
+    leading: 0.55em,
+    spacing: 1em,
+  ),
+  link-line-args: (
+    stroke: 0.5pt + luma(200),
+    offset: 2pt,
+  ),
+  // icon-args: (
+  //   color: luma(20%),
+  //   height: 0.95em,
+  //   baseline: 20%,
   // ),
-  // par-settings: (
-  //   leading: 0.5em,
-  //   spacing: 0.5em,
-  // ),
-  // list-settings: (
-  //   bullet-list-spacing: 0.7em,
-  //   numbered-list-spacing: 0.7em,
-  // ),
-  // link-line-settings: (
-  //   stroke: 0.5pt + luma(200),
-  //   offset: 2pt,
-  // ),
-  // heading-settings: (
-  //   above-spacing: 1.2em,
-  //   below-spacing: 0.6em,
-  //   section-title-size: 1.1em,
-  //   section-title-weight: "semibold",
-  //   section-note-size: 0.8em,
-  //   section-note-weight: "light",
-  //   section-line-above-spacing: -0.85em,
-  //   line-length: 100%,
-  //   line-stroke: 0.04em + black,
-  // ),
+  left-col-ratio: left-col-ratio,
   author-info: (
     name: "John Doe",
-    // primary-info: [
-    //   +1-234-567-8900 | #link("mailto:john.doe@example.com")[john.doe\@example.com] | #link("https://www.john-doe.com/")[john-doe.com]
-    // ],
-    // secondary-info: [
-    //   #link("https://www.linkedin.com/in/john-doe-linkedin")[linkedin] | #link("https://github.com/john-doe-github")[github] | #link("https://scholar.google.com/citations?user=john-doe-google-scholar")[google-scholar] | #link("https://orcid.org/john-doe-orcid")[orcid]
-    // ],
-    // tertiary-info: "Your City, Your State - Your ZIP, Your Country",
+    primary-info: [
+      Assistant Professor \
+      Department of Your Department \
+      Building Name \
+      Your University \
+      City, Countryg
+    ],
+    secondary-info: [
+      #link("mailto:your.email@university.edu")[your.email\@university.edu] \
+      #link("https://www.yourwebsite.com")[https://www.yourwebsite.com] \ 
+      #link("https://linkedin.com/in/your-linkedin-username")[#linkedin-icon()] #link("https://x.com/your-x-username")[#x-icon()] #link("https://scholar.google.com/citations?user=your-scholar-id")[#google-scholar-icon()] #link("https://github.com/your-github-username")[#github-icon()] #link("https://orcid.org/0000-0000-0000-0000")[#orcid-icon()]
+    ],
   ),
-  icon-color: luma(40%),
-  icon-height: 0.95em,
-  icon-baseline: 20%,
   body,
 ) = {
   // ============================================
@@ -54,111 +95,119 @@
   set document(author: author-info.name, title: author-info.name)
 
   set text(
-    font: "Alegreya",
-    size: 10pt,
+    font: font-args.font-family,
+    size: font-args.font-size,
     ligatures: false,
   )
 
   set page(
-    paper: "a4", // or "us-letter"
-    margin: (left: 0.95in, right: 0.95in, top: 0.9in, bottom: 0.9in),
+    paper: paper,
+    margin: margin,
     footer: context { align(center)[#text(size: 0.9em)[#counter(page).display("1")]] },
   )
 
   set par(
     justify: true,
     first-line-indent: 0pt,
-    leading: 0.55em,
-    spacing: 1em,
+    leading: par-args.leading,
+    spacing: par-args.spacing,
   )
+
+  show par: it => {
+    grid(
+      columns: (left-col-ratio, 1fr),
+      column-gutter: col-gutter,
+      [], it,
+    )
+  }
+
+  // ============================================
+  // HEADING SETTINGS
+  // ============================================
+  show heading.where(level: 1): it => {
+    set block(breakable: false, above: 1.2em, below: 0.8em)
+    set text(font: font-args.author-font-family, size: font-args.author-font-size, weight: "bold")
+    it
+  }
 
   show heading.where(level: 2): it => {
     set block(breakable: false, above: 1.2em, below: 1em)
-    set text(font: "Inter 18pt", size: 12pt)
+    set text(font: font-args.heading-font-family)
     it
   }
 
   show heading.where(level: 3): it => {
     set block(breakable: false, above: 1em, below: 1em)
-    set text(size: 10pt, weight: "medium")
+    set text(style: "italic")
     set align(right)
-    col1[#smallcaps[#it]]
+    lcol(left-col-ratio, 1fr, [#it])
   }
 
   // ============================================
   // LINK SETTINGS
   // ============================================
-  show link: it => {underline(stroke: 0.5pt + luma(200), offset: 2pt, it)}
-
-  let configured-icons = configure-icon-registry(
-    color: icon-color,
-    height: icon-height,
-    baseline: icon-baseline,
-  )
-  let google-scholar-icon = configured-icons.at("google-scholar-icon")
-  let link-icon = configured-icons.at("link-icon")
-  let linkedin-icon = configured-icons.at("linkedin-icon")
-  let github-icon = configured-icons.at("github-icon")
-  let orcid-icon = configured-icons.at("orcid-icon")
-  let x-icon = configured-icons.at("x-icon")
+  show link: it => {underline(stroke: link-line-args.stroke, offset: link-line-args.offset, it)}
 
   // ============================================
-  // HEADER
+  // AUTHOR HEADER
   // ============================================
-  let header-block-above = 0pt
-  let header-block-below = 1.8em
-  let header-title-gap = 1.5em
-  block(above: header-block-above, below: header-block-below)[
-    #set par(spacing: 0pt)
-    #text(font: "Inter 18pt", size: 1.8em, weight: "bold")[Wenhao Liao]
-    #v(header-title-gap)
+  block(below: 0.8em)[
+    #heading(level: 1)[#author-info.name]
     #pad(left: 2em, right: 2em)[
       #grid(
         columns: (1fr, 1fr),
         column-gutter: 2em,
         row-gutter: 0.15em,
         align: (left, right),
-        [
-          Assistant Professor \
-          Department of Your Department \
-          Building Name \
-          Your University \
-          City, Countryg
-        ],
-        text(font: "Courier New", size: 0.95em)[
-          #link("mailto:your.email@university.edu")[your.email\@university.edu] \
-          #link("https://www.yourwebsite.com")[https://www.yourwebsite.com] \ 
-          #link("https://linkedin.com/in/your-linkedin-username")[#linkedin-icon()] #link("https://x.com/your-x-username")[#x-icon()] #link("https://scholar.google.com/citations?user=your-scholar-id")[#google-scholar-icon()] #link("https://github.com/your-github-username")[#github-icon()] #link("https://orcid.org/0000-0000-0000-0000")[#orcid-icon()] 
-        ],
+        author-info.primary-info,
+        text(font: font-args.head-web-font-family, size: font-args.head-web-font-size)[#author-info.secondary-info],
       )
     ]
   ]
 
+  // ============================================
+  // BODY
+  // ============================================
   body
 }
 
-// Institution / organization line with right-aligned location.
-#let subhead(name, location: none) = {
-  grid(
-    columns: (1fr, auto),
-    column-gutter: 1em,
-    align: (left, right),
-    text(weight: "medium")[#smallcaps(name)],
-    if location != none { text(style: "italic")[#location] } else { [] },
-  )
+// ============================================
+// SUBHEADING FUNCTIONS
+// ============================================
+#let subhead(name, sub-info: none, left-col-ratio: left-col-ratio) = {
+  rcol(left-col-ratio, 1fr, [
+      #text(weight: "medium")[#smallcaps(name)] #h(1fr) #if sub-info != none { text(style: "italic")[#sub-info] } else { [] }
+  ])
 }
 
+#let subhead-item(
+  name,
+  sub-info: none,
+  left-col-ratio: left-col-ratio,
+  body-pad-left: 2em,
+  body
+) = {
+  subhead(name, sub-info: sub-info, left-col-ratio: left-col-ratio)
+  pad(left: body-pad-left)[
+  // must add parbreak() to make sure the body is wrapped in `show par`.
+    #body #parbreak()
+  ]
+}
+
+// ============================================
+// ENTRY FUNCTIONS
+// ============================================
 // Two-column entry with a fixed left column (date/ratio/institution) and a
 // right column that can contain an optional right-aligned "where" field.
 #let entry(label, title, where: none, body: none, left-col: left-col-ratio) = {
   grid(
     columns: (left-col, 1fr),
-    column-gutter: 1.2em,
+    column-gutter: col-gutter,
     align: (left, left),
     label,
     grid(
       columns: (1fr, auto),
-      column-gutter: 1em,
+      column-gutter: col-gutter,
       align: (left, right),
       text(weight: "bold")[#title],
       if where != none { text(style: "italic")[#where] } else { [] },
@@ -167,33 +216,15 @@
   if body != none {
     grid(
       columns: (left-col, 1fr),
-      column-gutter: 1.2em,
+      column-gutter: col-gutter,
       [],
-      body,
+      {
+        // Prevent nested two-column wrapping when resume enables default par -> col2.
+        show par: it => it
+        body
+      },
     )
   }
-}
-
-#let col1(body, right: none, left-col: left-col-ratio) = {
-  grid(
-    columns: (left-col, 1fr),
-    column-gutter: 1.2em,
-    body,
-    if right != none { right } else { [] },
-  )
-}
-
-#let col2(body, left: none, left-col: left-col-ratio) = {
-  grid(
-    columns: (left-col, 1fr),
-    column-gutter: 1.2em,
-    if left != none { left } else { [] },
-    body,
-  )
-}
-
-#let category(title) = {
-  text(style: "italic")[#title]
 }
 
 // Publications: continuous numbering like the reference PDF.
@@ -205,7 +236,7 @@
     #c.step()
   ]
   grid(
-    columns: (2.6em, 1fr),
+    columns: (7.6em, 1fr),
     column-gutter: 0.6em,
     align: (right, left),
     label,
