@@ -1,10 +1,17 @@
 #import "icons.typ": *
 
-// default layout settings ratio
-#let left-col-ratio = 15%
-#let col-gutter = 1.2em
+// ============================================
+// Column layout settings
+// ============================================
+#let default-c1-len = 15%
+#let default-c2-len = 1fr
+#let default-c3-len = auto
+#let default-col-gutter = 1em
+#let default-col-align = (left, left, right)
 
-// Configure the icon registry with default colors.
+// ============================================
+// Icon registry functions
+// ============================================
 #let configured-icons = configure-icon-registry(
   color: luma(20%),
   height: 0.95em,
@@ -18,45 +25,19 @@
 #let x-icon = configured-icons.at("x-icon")
 
 // ============================================
-// Two-column layout function.
-// ============================================
-#let cols(
-  left-len,
-  right-len,
-  left-content,
-  right-content,
-  col-gutter: col-gutter,
-  ) = {
-    grid(
-      columns: (left-len, right-len),
-      column-gutter: col-gutter,
-      left-content,
-      right-content,
-    )
-}
-
-#let lcol(left-len, right-len, content, col-gutter: col-gutter) = {
-  cols(left-len, right-len, content, [], col-gutter: col-gutter)
-}
-
-#let rcol(left-len, right-len, content, col-gutter: col-gutter) = {
-  cols(left-len, right-len, [], content, col-gutter: col-gutter)
-}
-
-// ============================================
 // RESUME FUNCTION
 // ============================================
 #let resume(
   paper: "a4", // or "us-letter"
   margin: (left: 0.95in, right: 0.95in, top: 0.9in, bottom: 0.9in),
-  font-args: (
+  text-args: (
     font-family: "Alegreya",
     font-size: 10pt,
-    heading-font-family: "Helvetica",
-    author-font-family: "Helvetica",
-    author-font-size: 20pt,
-    head-web-font-family: "Courier New",
-    head-web-font-size: 0.95em,
+  ),
+  heading-args: (
+    font-family: "Helvetica",
+    level1-font-size: 20pt,
+    level3-align: right,
   ),
   par-args: (
     leading: 0.55em,
@@ -66,12 +47,20 @@
     stroke: 0.5pt + luma(200),
     offset: 2pt,
   ),
+  col-args: (
+    c1-len: default-c1-len,
+    c2-len: default-c2-len,
+    col-gutter: default-col-gutter,
+  ),
   // icon-args: (
   //   color: luma(20%),
   //   height: 0.95em,
   //   baseline: 20%,
   // ),
-  left-col-ratio: left-col-ratio,
+  author-args: (
+    web-font-family: "Courier New",
+    web-font-size: 0.95em,
+  ),
   author-info: (
     name: "John Doe",
     primary-info: [
@@ -95,8 +84,8 @@
   set document(author: author-info.name, title: author-info.name)
 
   set text(
-    font: font-args.font-family,
-    size: font-args.font-size,
+    font: text-args.font-family,
+    size: text-args.font-size,
     ligatures: false,
   )
 
@@ -113,10 +102,11 @@
     spacing: par-args.spacing,
   )
 
+  // Default par settings for two-column layout.
   show par: it => {
     grid(
-      columns: (left-col-ratio, 1fr),
-      column-gutter: col-gutter,
+      columns: (col-args.c1-len, col-args.c2-len),
+      column-gutter: col-args.col-gutter,
       [], it,
     )
   }
@@ -126,21 +116,26 @@
   // ============================================
   show heading.where(level: 1): it => {
     set block(breakable: false, above: 1.2em, below: 0.8em)
-    set text(font: font-args.author-font-family, size: font-args.author-font-size, weight: "bold")
+    set text(font: heading-args.font-family, size: heading-args.level1-font-size, weight: "bold")
     it
   }
 
   show heading.where(level: 2): it => {
     set block(breakable: false, above: 1.2em, below: 1em)
-    set text(font: font-args.heading-font-family)
+    set text(font: heading-args.font-family)
     it
   }
 
   show heading.where(level: 3): it => {
     set block(breakable: false, above: 1em, below: 1em)
     set text(style: "italic")
-    set align(right)
-    lcol(left-col-ratio, 1fr, [#it])
+    set align(heading-args.level3-align)
+    grid(
+      columns: (col-args.c1-len, col-args.c2-len),
+      column-gutter: col-args.col-gutter,
+      [#it],
+      [],
+    )
   }
 
   // ============================================
@@ -160,7 +155,7 @@
         row-gutter: 0.15em,
         align: (left, right),
         author-info.primary-info,
-        text(font: font-args.head-web-font-family, size: font-args.head-web-font-size)[#author-info.secondary-info],
+        text(font: author-args.web-font-family, size: author-args.web-font-size)[#author-info.secondary-info],
       )
     ]
   ]
@@ -171,75 +166,160 @@
   body
 }
 
-// ============================================
-// SUBHEADING FUNCTIONS
-// ============================================
-#let subhead(name, sub-info: none, left-col-ratio: left-col-ratio) = {
-  rcol(left-col-ratio, 1fr, [
-      #text(weight: "medium")[#smallcaps(name)] #h(1fr) #if sub-info != none { text(style: "italic")[#sub-info] } else { [] }
-  ])
+#let cols3(
+  c1-len: default-c1-len,
+  c2-len: default-c2-len,
+  c3-len: default-c3-len,
+  align: default-col-align,
+  col-gutter: default-col-gutter,
+  c1-text-args: (:),
+  c2-text-args: (:),
+  c3-text-args: (:),
+  c1,
+  c2,
+  c3,
+) = {
+  let has-c3 = c3 != [] and c3 != none
+  if has-c3 {
+    grid(
+      columns: (c1-len, c2-len, c3-len),
+      align: align,
+      column-gutter: col-gutter,
+      text(..c1-text-args)[#c1],
+      text(..c2-text-args)[#c2],
+      text(..c3-text-args)[#c3],
+    )
+  } else {
+    grid(
+      columns: (c1-len, c2-len),
+      align: (align.at(0), align.at(1)),
+      column-gutter: col-gutter,
+      text(..c1-text-args)[#c1],
+      text(..c2-text-args)[#c2],
+    )
+  }
 }
 
-#let subhead-item(
-  name,
-  sub-info: none,
-  left-col-ratio: left-col-ratio,
+// ============================================
+// EMPLOYMENT FUNCTIONS
+// ============================================
+#let employment-head(
+  c2, c3,
+  c1-len: default-c1-len,
+  c2-len: default-c2-len,
+  c3-len: default-c3-len,
+  col-gutter: default-col-gutter,
+  c2-text-args: (weight: "bold"),
+  c3-text-args: (style: "italic"),
+) = {
+  cols3(
+    [], smallcaps(c2), c3,
+    c1-len: c1-len,
+    c2-len: c2-len,
+    c3-len: c3-len,
+    col-gutter: col-gutter,
+    c2-text-args: c2-text-args,
+    c3-text-args: c3-text-args,
+  )
+}
+
+#let employment-head-item(
+  c2, c3,
+  c1-len: default-c1-len,
+  c2-len: default-c2-len,
+  c3-len: auto,
+  col-gutter: default-col-gutter,
+  c2-text-args: (weight: "bold"),
+  c3-text-args: (style: "italic"),
   body-pad-left: 2em,
   body
 ) = {
-  subhead(name, sub-info: sub-info, left-col-ratio: left-col-ratio)
+  employment-head(
+    c2, c3,
+    c1-len: c1-len,
+    c2-len: c2-len,
+    c3-len: c3-len,
+    col-gutter: col-gutter,
+    c2-text-args: c2-text-args,
+    c3-text-args: c3-text-args,
+  )
   pad(left: body-pad-left)[
-  // must add parbreak() to make sure the body is wrapped in `show par`.
+    // Keep parbreak so single body blocks still render as paragraph content.
     #body #parbreak()
   ]
 }
 
 // ============================================
-// ENTRY FUNCTIONS
+// META ENTRY FUNCTIONS
 // ============================================
-// Two-column entry with a fixed left column (date/ratio/institution) and a
-// right column that can contain an optional right-aligned "where" field.
-#let entry(label, title, where: none, body: none, left-col: left-col-ratio) = {
-  grid(
-    columns: (left-col, 1fr),
-    column-gutter: col-gutter,
-    align: (left, left),
-    label,
-    grid(
-      columns: (1fr, auto),
-      column-gutter: col-gutter,
-      align: (left, right),
-      text(weight: "bold")[#title],
-      if where != none { text(style: "italic")[#where] } else { [] },
-    ),
+#let meta-entry(
+  c1, c2, c3,
+  c1-len: default-c1-len,
+  c2-len: default-c2-len,
+  c3-len: default-c3-len,
+  col-gutter: default-col-gutter,
+  align: default-col-align,
+  c1-text-args: (:),
+  c2-text-args: (weight: "bold"),
+  c3-text-args: (style: "italic"),
+) = {
+  cols3(
+    c1, c2, c3,
+    c1-len: c1-len,
+    c2-len: c2-len,
+    c3-len: c3-len,
+    col-gutter: col-gutter,
+    c1-text-args: c1-text-args,
+    c2-text-args: c2-text-args,
+    c3-text-args: c3-text-args,
   )
-  if body != none {
-    grid(
-      columns: (left-col, 1fr),
-      column-gutter: col-gutter,
-      [],
-      {
-        // Prevent nested two-column wrapping when resume enables default par -> col2.
-        show par: it => it
-        body
-      },
-    )
-  }
 }
 
-// Publications: continuous numbering like the reference PDF.
+#let meta-entry-item(
+  c1, c2, c3,
+  c1-len: default-c1-len,
+  c2-len: default-c2-len,
+  c3-len: default-c3-len,
+  col-gutter: default-col-gutter,
+  align: default-col-align,
+  c1-text-args: (:),
+  c2-text-args: (weight: "bold"),
+  c3-text-args: (style: "italic"),
+  body,
+) = {
+  meta-entry(
+    c1, c2, c3,
+    c1-len: c1-len,
+    c2-len: c2-len,
+    c3-len: c3-len,
+    col-gutter: col-gutter,
+    align: align,
+    c1-text-args: c1-text-args,
+    c2-text-args: c2-text-args,
+    c3-text-args: c3-text-args,
+  )
+  [#body #parbreak()]
+}
+
 #let pubs-reset() = context { counter("pub").update(1) }
-#let pubitem(body) = context {
+#let pubitem(
+  c1-len: default-c1-len,
+  c2-len: default-c2-len,
+  c3-len: default-c3-len,
+  col-gutter: 1em,
+  body,
+) = context {
   let c = counter("pub")
   let label = [
     \[#c.display("1")\]
     #c.step()
   ]
-  grid(
-    columns: (7.6em, 1fr),
-    column-gutter: 0.6em,
-    align: (right, left),
-    label,
-    body,
+  cols3(
+    label, body, [],
+    c1-len: c1-len,
+    c2-len: c2-len,
+    c3-len: c3-len,
+    col-gutter: col-gutter,
+    align: (right, left, right),
   )
 }
