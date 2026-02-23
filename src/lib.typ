@@ -179,6 +179,7 @@
   c2,
   c3,
 ) = {
+  set par(justify: false)
   let has-c3 = c3 != [] and c3 != none
   if has-c3 {
     grid(
@@ -203,6 +204,8 @@
 // ============================================
 // EMPLOYMENT FUNCTIONS
 // ============================================
+// TODO: Add block environment for item and head. (more precise vertical spacing control)
+
 #let employment-head(
   c2, c3,
   c1-len: default-c1-len,
@@ -302,7 +305,7 @@
 }
 
 #let pubs-reset() = context { counter("pub").update(1) }
-#let pubitem(
+#let pub-item(
   c1-len: default-c1-len,
   c2-len: default-c2-len,
   c3-len: default-c3-len,
@@ -322,4 +325,87 @@
     col-gutter: col-gutter,
     align: (right, left, right),
   )
+}
+
+// ============================================
+// LIST WRAPPER FUNCTIONS
+// ============================================
+
+#let employment-head-item-list(
+  c1-len: default-c1-len,
+  c2-len: default-c2-len,
+  c3-len: default-c3-len,
+  col-gutter: default-col-gutter,
+  c2-text-args: (weight: "bold"),
+  c3-text-args: (style: "italic"),
+  body-pad-left: 2em,
+  item-spacing: 1em,
+  ..items,
+) = {
+  set par(spacing: item-spacing)
+  for item in items.pos() {
+    employment-head-item(
+      item.at("c2", default: []),
+      item.at("c3", default: []),
+      c1-len: c1-len,
+      c2-len: c2-len,
+      c3-len: c3-len,
+      col-gutter: col-gutter,
+      c2-text-args: c2-text-args,
+      c3-text-args: c3-text-args,
+      body-pad-left: body-pad-left,
+      item.at("body", default: []),
+    )
+  }
+}
+
+#let meta-entry-item-list(
+  c1-len: default-c1-len,
+  c2-len: default-c2-len,
+  c3-len: default-c3-len,
+  col-gutter: default-col-gutter,
+  align: default-col-align,
+  c1-text-args: (:),
+  c2-text-args: (weight: "bold"),
+  c3-text-args: (style: "italic"),
+  item-spacing: 1em,
+  ..items,
+) = {
+  set par(spacing: item-spacing)
+  for item in items.pos() {
+    meta-entry-item(
+      item.at("c1", default: []),
+      item.at("c2", default: []),
+      item.at("c3", default: []),
+      c1-len: c1-len,
+      c2-len: c2-len,
+      c3-len: c3-len,
+      col-gutter: col-gutter,
+      align: align,
+      c1-text-args: c1-text-args,
+      c2-text-args: c2-text-args,
+      c3-text-args: c3-text-args,
+      item.at("body", default: []),
+    )
+  }
+}
+
+#let pub-item-list(
+  c1-len: default-c1-len,
+  c2-len: default-c2-len,
+  c3-len: default-c3-len,
+  col-gutter: 1em,
+  item-spacing: 1em,
+  ..items,
+) = {
+  set par(spacing: item-spacing)
+  for item in items.pos() {
+    pub-item(
+      item,
+      c1-len: c1-len,
+      c2-len: c2-len,
+      c3-len: c3-len,
+      col-gutter: col-gutter,
+    )
+  }
 }
