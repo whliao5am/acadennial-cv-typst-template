@@ -8,7 +8,7 @@ description = "A professional, lifelong (perennial) academic CV template"
 repository = "https://github.com/whliao5am/acadennial-cv-typst-template"
 keywords = ["cv", "academic", "resume"]
 categories = ["cv"]
-exclude = ["template/cv.pdf", "examples/"]
+exclude = ["template/cv.pdf", "examples/", "CLAUDE.md", "AGENTS.md"]
 
 [template]
 path = "template"
