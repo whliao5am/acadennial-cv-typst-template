@@ -179,7 +179,6 @@
   c2,
   c3,
 ) = {
-  set par(justify: false)
   let has-c3 = c3 != [] and c3 != none
   if has-c3 {
     grid(
@@ -304,6 +303,9 @@
   [#body #parbreak()]
 }
 
+// TODO: automatically read publications from bib
+// TODO: automatically generate sorted label from bib
+// TODO: automatically classify publications into conferences, journals, workshops, etc.
 #let pubs-reset() = context { counter("pub").update(1) }
 #let pub-item(
   c1-len: default-c1-len,
