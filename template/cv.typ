@@ -1,4 +1,4 @@
-#import "../src/lib.typ": *
+#import "@preview/acadennial-cv:0.1.0": *
 
 // ============================================
 // Default function configurations

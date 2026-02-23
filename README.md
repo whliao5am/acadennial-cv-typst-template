@@ -485,4 +485,8 @@ Contributions are welcome! Please feel free to submit issues and pull requests.
 This project is licensed under the [MIT License](LICENSE).
 
 ## Acknowledgments
-The layout and tone are inspired by [Shinan Liu – A Researcher in Networking, Security, and ML Systems](https://www.shinan.info/)
+
+- The layout and tone are inspired by [Shinan Liu – A Researcher in Networking, Security, and ML Systems](https://www.shinan.info/)
+
+- This template depends on the following Typst packages:
+  - [scienceicons](https://github.com/continuous-foundation/scienceicons) (MIT License)
