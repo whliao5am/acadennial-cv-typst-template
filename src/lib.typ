@@ -35,7 +35,7 @@
     font-size: 10pt,
   ),
   heading-args: (
-    font-family: "Helvetica",
+    font-family: "Arial",
     level1-font-size: 20pt,
     level3-align: right,
   ),

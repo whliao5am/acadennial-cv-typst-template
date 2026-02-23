@@ -1,7 +1,7 @@
 #import "../src/lib.typ": *
 
 // ============================================
-// Initialize left column ratio
+// Default function configurations
 // ============================================
 
 #let col-cfg = (
@@ -88,7 +88,7 @@ Machine Learning Systems, Cat Meme Classification, Distributed Coffee Brewing Op
 #meta-entry-item-list(
   (
     c1: "2019–2025",
-    c2: "Research Assistant (Advised by Prof. Andrew Ngineer)",
+    c2: text(tracking: -0.1pt)[Research Assistant (Advised by Prof. Andrew Ngineer)],
     c3: "Standfork University, Palo Latte, CA, USA",
     body: [Developed novel deep learning architectures for real-time cat meme classification with 99.9% accuracy on the ImageMeow dataset. Pioneered the use of attention mechanisms for identifying optimal napping schedules based on code compilation times.],
   ),
@@ -100,7 +100,7 @@ Machine Learning Systems, Cat Meme Classification, Distributed Coffee Brewing Op
   ),
   (
     c1: "2023–2024",
-    c2: "Research Consultant (Worked with Dr. Stack Overflow)",
+    c2: "Research Consultant",
     c3: "DeepMeme.ai Inc., San Framemeisco, CA, USA",
     body: [Led development of GPT-based meme generation pipeline with real-time dankness evaluation. Implemented federated learning framework for privacy-preserving rubber duck debugging across enterprise environments.],
   ),

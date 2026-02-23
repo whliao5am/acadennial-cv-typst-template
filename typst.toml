@@ -13,4 +13,4 @@ exclude = ["template/cv.pdf", "examples/"]
 [template]
 path = "template"
 entrypoint = "cv.typ"
-thumbnail = "assets/thumbnail-1.png"
+thumbnail = "examples/thumbnail-1.png"
