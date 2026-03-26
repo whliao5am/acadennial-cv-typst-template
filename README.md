@@ -5,13 +5,13 @@ A professional, elegant academic CV template built with [Typst](https://typst.ap
 <table>
 <tr>
   <td>
-    <img src="examples/thumbnail-1.png" width="250px">
+    <img src="examples/thumbnail-1.png" width="250px" alt="Preview of the Acadennial CV template, first page thumbnail">
   </td>
   <td>
-    <img src="examples/thumbnail-2.png" width="250px">
+    <img src="examples/thumbnail-2.png" width="250px" alt="Preview of the Acadennial CV template, second page thumbnail">
   </td>
   <td>
-    <img src="examples/thumbnail-3.png" width="250px">
+    <img src="examples/thumbnail-3.png" width="250px" alt="Preview of the Acadennial CV template, third page thumbnail">
   </td>
 </tr>
 </table>
